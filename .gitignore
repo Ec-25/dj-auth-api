@@ -1,0 +1,10 @@
+# paths
+.vscode/
+__pycache__/
+temp/
+env/
+
+# files
+.env
+*.temp
+*.sqlite3

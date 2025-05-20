@@ -83,6 +83,9 @@ This is the default Django command for creating a superuser interactively, with 
 ### `activateuser` command
 Activates a user account associated with a valid one-time password (OTP) code.
 
+### `initdefaultadmin` command
+Initializes a default administrator user. Use only during first-time setup.
+
 ## Run Server
 To start the server, run:
 

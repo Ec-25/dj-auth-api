@@ -1,4 +1,3 @@
-from getpass import getpass
 from django.core.management.base import BaseCommand
 from users.models import OneTimePassword
 
@@ -18,8 +17,7 @@ class Command(BaseCommand):
             return
 
         user = otp.user
-        user.is_active = True
-        user.save()
+        user.change_status(True)
         otp.delete()
 
         self.stdout.write(self.style.SUCCESS(

@@ -1,0 +1,4 @@
+{
+    "subject": "djAuth: Activate your account.",
+    "message": "Hello {name}.\n\nThank you for registering with 'djAuth'. Use the following code to activate your account from the app.\n\t{code}"
+}

@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+from datetime import timedelta
 from pathlib import Path
 
 from djAuth.utils import getenv, getenv_or_error
@@ -17,9 +18,6 @@ from djAuth.utils import getenv, getenv_or_error
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-# Server Info
-BASE_URL = getenv_or_error("BASE_URL")
 
 
 # Quick-start development settings - unsuitable for production
@@ -31,9 +29,15 @@ SECRET_KEY = getenv_or_error("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = getenv("DEBUG", "False") == "True"
 
+
 ALLOWED_HOSTS = (lambda ah: ah.split(",") if ah else [])(
     getenv("ALLOWED_HOSTS", ""))
 
+CORS_ALLOWED_ORIGINS = getenv("CORS_ALLOWED_ORIGINS", "")
+if CORS_ALLOWED_ORIGINS:
+    CORS_ALLOWED_ORIGINS = CORS_ALLOWED_ORIGINS.split(", ")
+else:
+    CORS_ALLOWED_ORIGINS = []
 
 # Application definition
 
@@ -44,12 +48,16 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "rest_framework",
+    "rest_framework_simplejwt.token_blacklist",
+    "corsheaders",
     "users",
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -145,5 +153,23 @@ EMAIL_HOST_PASSWORD = getenv_or_error("EMAIL_HOST_PASSWORD")
 USERS_JSON_PATH = BASE_DIR / "users" / "json"
 USERS_JSON_PATHS = {
     "verification_email": USERS_JSON_PATH / "verification_email.json",
-    "notification_email": USERS_JSON_PATH / "update_notification.json"
+    "notification_email": USERS_JSON_PATH / "update_notification.json",
+    "reset_password_email": USERS_JSON_PATH / "reset_password.json"
+}
+
+# Rest Framework
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
+    "DEFAULT_RENDERER_CLASSES": (
+        "djAuth.renderers.JSONRenderer",
+    )
+}
+
+# JWT config
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "AUTH_HEADER_TYPES": ("Bearer",),
 }

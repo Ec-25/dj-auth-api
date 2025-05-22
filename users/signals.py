@@ -9,7 +9,7 @@ from users.actions import send_verification_email, send_notification_email
 
 
 @receiver(post_save, sender=User)
-def create_user(sender: type[User], instance: User, created: bool, **kwargs):
+def handle_user_post_save(sender: type[User], instance: User, created: bool, **kwargs):
     """
     Handles user-related post-save actions:
     - On creation:
